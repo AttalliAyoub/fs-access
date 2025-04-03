@@ -1,13 +1,9 @@
 {
   "name": "@attalliayoub/fs-access",
+  "license": "MIT",
   "version": "0.1.0",
   "exports": "./mod.ts",
   "tasks": {
-    "dev": "deno test --watch"
-  },
-  "license": "MIT",
-  "imports": {
-    "@std/assert": "jsr:@std/assert@1",
-    "@std/fs": "jsr:@std/fs@^1.0.15"
+    "dev": "deno test --watch --allow-read --allow-write --allow-run"
   }
 }

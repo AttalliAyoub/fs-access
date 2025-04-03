@@ -1,11 +1,12 @@
 import { isExecutable, isExecutableSync } from "./is_executable.ts";
 import { AccessMode, AccessMode2String } from "./types.ts";
 export { AccessMode } from "./types.ts";
+
 /**
  * Check if a file or directory is accessible in Deno
  * Similar to Node.js fs.accessSync but using Deno native APIs
  *
- * @param path: string - Path to the file or directory to check
+ * @param path: string | URL - Path to the file or directory to check
  * @param mode?: AccessMode - Optional mode to check for (defaults to existence check)
  *        fs.constants.F_OK - Check for existence (default)
  *        fs.constants.R_OK - Check for read permission
@@ -39,7 +40,7 @@ export { AccessMode } from "./types.ts";
  * }
  * ```
  */
-export function accessSync(path: string, mode?: AccessMode): void {
+export function accessSync(path: string | URL, mode?: AccessMode): void {
   try {
     const fileInfo = Deno.statSync(path);
     if (mode === null || mode === undefined) return;
@@ -93,7 +94,7 @@ export function accessSync(path: string, mode?: AccessMode): void {
  * Check if a file or directory is accessible in Deno
  * Similar to Node.js fs.access but using Deno native APIs
  *
- * @param path: string - Path to the file or directory to check
+ * @param path: string | URL - Path to the file or directory to check
  * @param mode?: AccessMode - Optional mode to check for (defaults to existence check)
  * @returns Promise<void> - throws error if file is not accessible with specified mode
  * Example:
@@ -102,7 +103,7 @@ export function accessSync(path: string, mode?: AccessMode): void {
  * console.log("File exists!");
  * ```
  */
-export async function access(path: string, mode?: AccessMode): Promise<void> {
+export async function access(path: string | URL, mode?: AccessMode): Promise<void> {
   try {
     const fileInfo = await Deno.stat(path);
     if (mode === null || mode === undefined) return;

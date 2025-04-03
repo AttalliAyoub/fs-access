@@ -14,8 +14,8 @@ A Deno library that provides file system access checking functionality, similar 
 
 ## Installation
 
-```typescript
-import { access, accessSync, AccessMode } from "jsr:@attalliayoub/fs-access";
+```sh
+Deno add jsr:@attalliayoub/fs-access
 ```
 
 ## Usage
@@ -116,7 +116,7 @@ The library throws errors in the following cases:
 
 ## License
 
-MIT
+[MIT](http://github.com/AttalliAyoub/fs-access/blob/main/LICENSE)
 
 ## Contributing
 
