@@ -1,9 +1,13 @@
 {
-  "name": "@attalliayoub/fs-access",
-  "license": "MIT",
-  "version": "0.1.0",
-  "exports": "./mod.ts",
-  "tasks": {
-    "dev": "deno test --watch --allow-read --allow-write --allow-run"
-  }
+	"name": "@attalliayoub/fs-access",
+	"license": "MIT",
+	"version": "0.1.0",
+	"exports": "./mod.ts",
+	"tasks": {
+		"dev": "deno test --watch --allow-read --allow-write --allow-run"
+	},
+	"fmt": {
+		"useTabs": true,
+		"indentWidth": 4
+	}
 }

@@ -41,53 +41,58 @@ export { AccessMode } from "./types.ts";
  * ```
  */
 export function accessSync(path: string | URL, mode?: AccessMode): void {
-  try {
-    const fileInfo = Deno.statSync(path);
-    if (mode === null || mode === undefined) return;
-    const { isFile, isDirectory } = fileInfo;
-    switch (mode) {
-      case AccessMode.R_OK:
-        if (isFile) {
-          const file = Deno.openSync(path, { read: true });
-          file.close();
-        } else if (isDirectory) {
-          Deno.readDirSync(path).next();
-        }
-        break;
-      case AccessMode.W_OK:
-        if (isFile) {
-          const file = Deno.openSync(path, { write: true });
-          file.close();
-        } else if (isDirectory) {
-          const tempPath = `${path}/.deno_access_test_${Date.now()}`;
-          Deno.writeTextFileSync(tempPath, "");
-          Deno.removeSync(tempPath);
-        }
-        break;
-      case AccessMode.X_OK:
-        if (isDirectory) {
-          Deno.readDirSync(path).next();
-        } else if (isFile) {
-          const isExecutable = isExecutableSync(path);
-          if (!isExecutable) {
-            throw new Error(`EACCES: permission denied, execute '${path}'`);
-          }
-        }
-        break;
-      default:
-        break;
-    }
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
-      throw new Error(`ENOENT: no such file or directory, access '${path}'`, {
-        cause: error,
-      });
-    }
-    throw new Error(
-      `EACCES: permission denied, ${AccessMode2String(mode)} '${path}'`,
-      { cause: error },
-    );
-  }
+	try {
+		const fileInfo = Deno.statSync(path);
+		if (mode === null || mode === undefined) return;
+		const { isFile, isDirectory } = fileInfo;
+		switch (mode) {
+			case AccessMode.R_OK:
+				if (isFile) {
+					const file = Deno.openSync(path, { read: true });
+					file.close();
+				} else if (isDirectory) {
+					Deno.readDirSync(path).next();
+				}
+				break;
+			case AccessMode.W_OK:
+				if (isFile) {
+					const file = Deno.openSync(path, { write: true });
+					file.close();
+				} else if (isDirectory) {
+					const tempPath = `${path}/.deno_access_test_${Date.now()}`;
+					Deno.writeTextFileSync(tempPath, "");
+					Deno.removeSync(tempPath);
+				}
+				break;
+			case AccessMode.X_OK:
+				if (isDirectory) {
+					Deno.readDirSync(path).next();
+				} else if (isFile) {
+					const isExecutable = isExecutableSync(path);
+					if (!isExecutable) {
+						throw new Error(
+							`EACCES: permission denied, execute '${path}'`,
+						);
+					}
+				}
+				break;
+			default:
+				break;
+		}
+	} catch (error) {
+		if (error instanceof Deno.errors.NotFound) {
+			throw new Error(
+				`ENOENT: no such file or directory, access '${path}'`,
+				{
+					cause: error,
+				},
+			);
+		}
+		throw new Error(
+			`EACCES: permission denied, ${AccessMode2String(mode)} '${path}'`,
+			{ cause: error },
+		);
+	}
 }
 
 /**
@@ -103,52 +108,60 @@ export function accessSync(path: string | URL, mode?: AccessMode): void {
  * console.log("File exists!");
  * ```
  */
-export async function access(path: string | URL, mode?: AccessMode): Promise<void> {
-  try {
-    const fileInfo = await Deno.stat(path);
-    if (mode === null || mode === undefined) return;
-    const { isFile, isDirectory } = fileInfo;
-    switch (mode) {
-      case AccessMode.R_OK:
-        if (isFile) {
-          await Deno.open(path, { read: true })
-            .then((file) => file.close());
-        } else if (isDirectory) {
-          await Deno.readDir(path)[Symbol.asyncIterator]().next();
-        }
-        break;
-      case AccessMode.W_OK:
-        if (isFile) {
-          await Deno.open(path, { write: true })
-            .then((file) => file.close());
-        } else if (isDirectory) {
-          const tempPath = `${path}/.deno_access_test_${Date.now()}`;
-          await Deno.writeTextFile(tempPath, "")
-            .then(() => Deno.remove(tempPath));
-        }
-        break;
-      case AccessMode.X_OK:
-        if (isDirectory) {
-          await Deno.readDir(path)[Symbol.asyncIterator]().next();
-        } else if (isFile) {
-          const executable = await isExecutable(path);
-          if (!executable) {
-            throw new Error(`EACCES: permission denied, execute '${path}'`);
-          }
-        }
-        break;
-      default:
-        break;
-    }
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
-      throw new Error(`ENOENT: no such file or directory, access '${path}'`, {
-        cause: error,
-      });
-    }
-    throw new Error(
-      `EACCES: permission denied, ${AccessMode2String(mode)} '${path}'`,
-      { cause: error },
-    );
-  }
+export async function access(
+	path: string | URL,
+	mode?: AccessMode,
+): Promise<void> {
+	try {
+		const fileInfo = await Deno.stat(path);
+		if (mode === null || mode === undefined) return;
+		const { isFile, isDirectory } = fileInfo;
+		switch (mode) {
+			case AccessMode.R_OK:
+				if (isFile) {
+					await Deno.open(path, { read: true })
+						.then((file) => file.close());
+				} else if (isDirectory) {
+					await Deno.readDir(path)[Symbol.asyncIterator]().next();
+				}
+				break;
+			case AccessMode.W_OK:
+				if (isFile) {
+					await Deno.open(path, { write: true })
+						.then((file) => file.close());
+				} else if (isDirectory) {
+					const tempPath = `${path}/.deno_access_test_${Date.now()}`;
+					await Deno.writeTextFile(tempPath, "")
+						.then(() => Deno.remove(tempPath));
+				}
+				break;
+			case AccessMode.X_OK:
+				if (isDirectory) {
+					await Deno.readDir(path)[Symbol.asyncIterator]().next();
+				} else if (isFile) {
+					const executable = await isExecutable(path);
+					if (!executable) {
+						throw new Error(
+							`EACCES: permission denied, execute '${path}'`,
+						);
+					}
+				}
+				break;
+			default:
+				break;
+		}
+	} catch (error) {
+		if (error instanceof Deno.errors.NotFound) {
+			throw new Error(
+				`ENOENT: no such file or directory, access '${path}'`,
+				{
+					cause: error,
+				},
+			);
+		}
+		throw new Error(
+			`EACCES: permission denied, ${AccessMode2String(mode)} '${path}'`,
+			{ cause: error },
+		);
+	}
 }

@@ -11,20 +11,22 @@
  * ```
  */
 export async function isExecutable(path: string | URL): Promise<boolean> {
-    const fileInfo = await Deno.stat(path);
-    if (!fileInfo.isFile) return false;
-    if (Deno.build.os === "windows") {
-        const execExtensions = [".exe", ".cmd", ".bat", ".com"];
-        return execExtensions.some((ext) => path.toString().toLowerCase().endsWith(ext));
-    }
-    const permissions = await Deno.permissions.query({
-        name: "run",
-        command: path,
-    });
-    if (permissions.state !== "granted") return false;
-    const command = new Deno.Command("test", { args: ["-x", path.toString()] });
-    const { code } = await command.output();
-    return code === 0;
+	const fileInfo = await Deno.stat(path);
+	if (!fileInfo.isFile) return false;
+	if (Deno.build.os === "windows") {
+		const execExtensions = [".exe", ".cmd", ".bat", ".com"];
+		return execExtensions.some((ext) =>
+			path.toString().toLowerCase().endsWith(ext)
+		);
+	}
+	const permissions = await Deno.permissions.query({
+		name: "run",
+		command: path,
+	});
+	if (permissions.state !== "granted") return false;
+	const command = new Deno.Command("test", { args: ["-x", path.toString()] });
+	const { code } = await command.output();
+	return code === 0;
 }
 
 /**
@@ -40,18 +42,20 @@ export async function isExecutable(path: string | URL): Promise<boolean> {
  * ```
  */
 export function isExecutableSync(path: string | URL): boolean {
-    const fileInfo = Deno.statSync(path);
-    if (!fileInfo.isFile) return false;
-    if (Deno.build.os === "windows") {
-        const execExtensions = [".exe", ".cmd", ".bat", ".com"];
-        return execExtensions.some((ext) => path.toString().toLowerCase().endsWith(ext));
-    }
-    const permissions = Deno.permissions.querySync({
-        name: "run",
-        command: path,
-    });
-    if (permissions.state !== "granted") return false;
-    const command = new Deno.Command("test", { args: ["-x", path.toString()] });
-    const { code } = command.outputSync();
-    return code === 0;
+	const fileInfo = Deno.statSync(path);
+	if (!fileInfo.isFile) return false;
+	if (Deno.build.os === "windows") {
+		const execExtensions = [".exe", ".cmd", ".bat", ".com"];
+		return execExtensions.some((ext) =>
+			path.toString().toLowerCase().endsWith(ext)
+		);
+	}
+	const permissions = Deno.permissions.querySync({
+		name: "run",
+		command: path,
+	});
+	if (permissions.state !== "granted") return false;
+	const command = new Deno.Command("test", { args: ["-x", path.toString()] });
+	const { code } = command.outputSync();
+	return code === 0;
 }
